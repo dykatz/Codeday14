@@ -1,6 +1,7 @@
 require 'game'
 
 local gs = require 'hump.gamestate'
+local lf = require 'loveframes'
 
 menu = {}
 
@@ -9,25 +10,11 @@ function menu.enter()
 	love.graphics.setNewFont(12)
 	love.graphics.setBackgroundColor(0, 0, 255)
 
-	menu.stage = 'intro'
-end
+	lf.SetState 'menu'
 
-function menu.keyreleased(k)
-	if menu.stage == 'intro' then
-	
-		if k == ' ' then
-			menu.stage = 'select'
-		elseif k == 'escape' then
-			love.event.quit()
-		end
-	
-	elseif menu.stage == 'select' then
-	
-		if k == ' ' or k == 'return' then
-			gs.switch(game)
-		elseif k == 'escape' then
-			menu.stage = 'intro'
-		end
-	
-	end
+	menu.frame = lf.Create 'frame'
+	menu.frame:SetName('The Glorious Main Menu'):SetState('menu'):SetDraggable(false):ShowCloseButton(false):SetSize(640, 480):Center()
+
+	menu.data = lf.Create('columnlist', menu.frame)
+	menu.data:SetPos(5, 30):SetSize(600, 445):AddColumn('Save Name'):AddColumn('Last Used'):AddColumn('Location')
 end
