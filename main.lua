@@ -1,27 +1,38 @@
 require 'sti'
 require 'menu'
+require 'game'
+
+local gs = require 'hump.gamestate'
 
 function love.load()
-	mode = menu
-	menu.load()
+	gs.registerEvents()
+	gs.switch(menu)
 end
 
-function setCallback(name)
-	love[name] = function(...)
-		if type(mode[name]) == 'function' then
-			mode[name](...)
-		end
-	end
+function love.update(dt)
+	loveframes.update(dt)
+end
+                 
+function love.draw()
+	loveframes.draw()
+end
+ 
+function love.mousepressed(x, y, button)
+	loveframes.mousepressed(x, y, button)
+end
+ 
+function love.mousereleased(x, y, button)
+	loveframes.mousereleased(x, y, button)
+end
+ 
+function love.keypressed(key, unicode)
+	loveframes.keypressed(key, unicode)
+end
+ 
+function love.keyreleased(key)
+	loveframes.keyreleased(key)
 end
 
-setCallback 'update'
-setCallback 'draw'
-setCallback 'keypressed'
-setCallback 'keyreleased'
-setCallback 'mousepressed'
-setCallback 'mousereleased'
-setCallback 'focus'
-setCallback 'resize'
-setCallback 'visable'
-setCallback 'mousefocus'
-setCallback 'textinput'
+function love.textinput(text)
+	loveframes.textinput(text)
+end
