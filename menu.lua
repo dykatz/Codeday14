@@ -10,60 +10,48 @@ menu = {}
 function menu.enter()
 	lf.SetState 'menu'
 
-	menu.frame = lf.Create 'frame'
-	menu.frame:SetName('The Glorious Main Menu'):SetState('menu'):ShowCloseButton(false):SetSize(640, 480):Center()
+	local frame = lf.Create('frame'):SetName('The Glorious Main Menu'):SetState('menu'):ShowCloseButton(false):SetSize(640, 480):Center()
 
-	menu.data = lf.Create('columnlist', menu.frame)
-	menu.data:SetPos(5, 30):SetSize(500, 445):AddColumn('Save Name'):AddColumn('Location'):AddColumn('Last Used'):AddColumn('Created')
-	function menu.data:OnSelected(_, data)
-		menu.selection = data[1]
+	local data = lf.Create('columnlist', frame):SetPos(5, 30):SetSize(500, 445):AddColumn('Save Name'):AddColumn('Location'):AddColumn('Last Used'):AddColumn('Created')
+	function data:OnSelected(_, data_)
+		menu.selection = data_[1]
 	end
 
-	menu.newgame = lf.Create('button', menu.frame)
-	menu.newgame:SetPos(510, 30):SetSize(125, 25):SetText('New Game')
-	function menu.newgame:OnClick()
+	local newgame = lf.Create('button', frame):SetPos(510, 30):SetSize(125, 25):SetText('New Game')
+	function newgame:OnClick()
 		lf.SetState 'menu.input'
 	end
 
-	menu.loadgame = lf.Create('button', menu.frame)
-	menu.loadgame:SetPos(510, 60):SetSize(125, 25):SetText('Load Game')
-	function menu.loadgame:OnClick()
+	local loadgame = lf.Create('button', frame):SetPos(510, 60):SetSize(125, 25):SetText('Load Game')
+	function loadgame:OnClick()
 		if menu.selection then
 			gs.switch(game, menu.selection)
 		end
 	end
 
-	menu.deletegame = lf.Create('button', menu.frame)
-	menu.deletegame:SetPos(510, 90):SetSize(125, 25):SetText('Delete Save')
-	function menu.deletegame:OnClick()
+	local deletegame = lf.Create('button', frame):SetPos(510, 90):SetSize(125, 25):SetText('Delete Save')
+	function deletegame:OnClick()
 		if menu.selection then
 			love.filesystem.remove('saves' .. menu.selection)
 		end
 	end
 
-	menu.quit = lf.Create('button', menu.frame)
-	menu.quit:SetPos(510, 120):SetSize(125, 25):SetText('Quit Game')
-	function menu.quit:OnClick()
+	local quit = lf.Create('button', frame):SetPos(510, 120):SetSize(125, 25):SetText('Quit Game')
+	function quit:OnClick()
 		love.event.quit()
 	end
 
-	menu.nameinput = lf.Create 'frame'
-	menu.nameinput:SetName('The Glorious Name Input'):SetState('menu.input'):SetSize(300, 90):ShowCloseButton(false):Center()
-
-	menu.nameinputtext = lf.Create('textinput', menu.nameinput)
-	menu.nameinputtext:SetPos(5, 30):SetSize(290, 25)
-
-	menu.backfromname = lf.Create('button', menu.nameinput)
-	menu.backfromname:SetPos(5, 60):SetSize(140, 25):SetText('Cancel')
-	function menu.backfromname:OnClick()
+	local nameinput = lf.Create('frame'):SetName('The Glorious Name Input'):SetState('menu.input'):SetSize(300, 90):ShowCloseButton(false):Center()
+	local nameinputtext = lf.Create('textinput', nameinput):SetPos(5, 30):SetSize(290, 25)
+	local backfromname = lf.Create('button', nameinput):SetPos(5, 60):SetSize(140, 25):SetText('Cancel')
+	function backfromname:OnClick()
 		lf.SetState 'menu'
 	end
 
-	menu.createnewgame = lf.Create('button', menu.nameinput)
-	menu.createnewgame:SetPos(150, 60):SetSize(140, 25):SetText('Start')
-	function menu.createnewgame:OnClick()
-		if #menu.nameinputtext:GetText():trim() > 0 then
-			gs.switch(game, menu.nameinputtext:GetText():trim())
+	local createnewgame = lf.Create('button', nameinput):SetPos(150, 60):SetSize(140, 25):SetText('Start')
+	function createnewgame:OnClick()
+		if #nameinputtext:GetText():trim() > 0 then
+			gs.switch(game, nameinputtext:GetText():trim())
 		end
 	end
 
@@ -72,10 +60,10 @@ function menu.enter()
 		love.filesystem.createDirectory 'saves'
 	end
 
-	local data = love.filesystem.getDirectoryItems 'saves'
+	local savefiles = love.filesystem.getDirectoryItems 'saves'
 
-	for _, i in ipairs(data) do
-		local data = Tserial.unpack(love.filesystem.read(i))
-		menu.data:AddRow(data.name, data.location, data.lastopened, data.created)
+	for _, i in ipairs(savefiles) do
+		local file = Tserial.unpack(love.filesystem.read(i))
+		data:AddRow(file.name, file.location, file.lastopened, file.created)
 	end
 end
