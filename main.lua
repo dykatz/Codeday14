@@ -13,7 +13,7 @@ function love.load()
 	gs.registerEvents()
 	gs.switch(menu)
 	
-	 map = sti.new("art/GameMap")
+	map = sti.new("art/GameMap")
 
     -- Create a custom layer
     map:addCustomLayer("Sprite Layer", 2)
