@@ -22,10 +22,11 @@ function game:enter(from, name)
 	function exitgame:OnClick()
 		game:save()
 		gs.switch(menu)
+		quickbar:Remove()
 	end
 
 	if love.filesystem.isFile('saves/' .. name) then
-		game.data = Tserial.unpack(love.filesystem.read('saves/' .. name))
+		game.data = deserialize(love.filesystem.read('saves/' .. name))
 	else
 		game.data = {}
 		game.data.name = name
