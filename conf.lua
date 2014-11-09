@@ -1,3 +1,5 @@
+io.stdout:setvbuf 'no'
+
 function love.conf(t)
 	t.window.fsaa = 2
 	t.title = 'The Glorious Adventure'

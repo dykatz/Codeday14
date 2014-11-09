@@ -1,3 +1,4 @@
+require 'misc.util'
 require 'game'
 require 'misc.tserial'
 
@@ -61,8 +62,8 @@ function menu.enter()
 	menu.createnewgame = lf.Create('button', menu.nameinput)
 	menu.createnewgame:SetPos(150, 60):SetSize(140, 25):SetText('Start')
 	function menu.createnewgame:OnClick()
-		if #menu.nameinputtext:GetText() > 0 then
-			gs.switch(game, menu.nameinputtext:GetText())
+		if #menu.nameinputtext:GetText():trim() > 0 then
+			gs.switch(game, menu.nameinputtext:GetText():trim())
 		end
 	end
 

@@ -6,6 +6,7 @@ local lf = require 'loveframes'
 local gs = require 'hump.gamestate'
 
 function love.load()
+	love.physics.setMeter(32)
 	love.graphics.setNewFont(12)
 	love.graphics.setBackgroundColor(51, 77, 77)
 

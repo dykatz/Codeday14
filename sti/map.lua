@@ -367,24 +367,27 @@ function Map:setTiles(index, tileset, gid)
 				end
 			end
 
-			local tile = {
-				gid			= gid,
-				tileset		= index,
-				quad		= quad(qx, qy, tw, th, iw, ih),
-				properties	= properties,
-				animation   = animation,
-				frame       = 1,
-				time        = 0,
-				width		= tileset.tilewidth,
-				height		= tileset.tileheight,
-				sx			= 1,
-				sy			= 1,
-				r			= 0,
-				offset		= {
-					x = -mw + tileset.tileoffset.x,
-					y = -th + tileset.tileoffset.y,
-				},
-			}
+			local tile = {}
+			tile.gid = gid
+			tile.tileset = index
+			tile.quad = quad(qx, qy, tw, th, iw, ih)
+			tile.properties = properties
+			tile.animation = animation
+			tile.frame = 1
+			tile.time = 0
+			tile.width = tileset.tilewidth
+			tile.height = tileset.tileheight
+			tile.sx = 1
+			tile.sy = 1
+			tile.r = 0
+			tile.offset = {}
+			if tileset.tileoffset then
+				tile.offset.x = -mw + tileset.tileoffset.x
+				tile.offset.y = -th + tileset.tileoffset.y
+			else
+				tile.offset.x = -mw
+				tile.offset.y = -th
+			end
 
 			if self.orientation == "isometric" then
 				tile.offset.x = -mw / 2
