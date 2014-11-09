@@ -80,7 +80,7 @@ function game:enter(from, name)
 			vy = 0
 		end
 
-		if vx ~= 0 or vy ~= 0 then self.playerSprite.looptime = 0.5 else self.playerSprite.looptime = 0 end
+		if vx ~= 0 or vy ~= 0 then self.playerSprite.frametime = 0.1 else self.playerSprite.frametime = 0 end
 		self.playerBody:setLinearVelocity(vx, vy)
 		self.playerSprite:update(dt)
 	end

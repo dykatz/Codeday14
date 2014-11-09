@@ -3,22 +3,20 @@ spritesheet.__index = spritesheet
 
 function spritesheet:new(image)
 	return setmetatable({
-		frame = 1, looptime = 0, animation = '', animations = {}, aggregate = 0,
+		frame = 1, frametime = 0, animation = '', animations = {}, aggregate = 0,
 		quad = love.graphics.newQuad(0, 0, 32, 64, image:getWidth(), image:getHeight()), image = image}, self)
 end
 
 function spritesheet:setAnimation(a)
-	self.aggregate = 0
-	self.frame = 1
 	self.animation = a
 end
 
 function spritesheet:update(dt)
-	if self.looptime > 0 then
+	if self.frametime > 0 then
 		self.aggregate = self.aggregate + dt
 
-		while self.aggregate > self.looptime / #self.animations[self.animation] do
-			self.aggregate = self.aggregate - self.looptime / #self.animations[self.animation]
+		while self.aggregate > self.frametime do
+			self.aggregate = self.aggregate - self.frametime
 			self.frame = self.frame + 1
 		end
 
@@ -33,7 +31,7 @@ end
 
 function spritesheet:draw(x, y)
 	local _, _, dx, dy = self.quad:getViewport()
-	love.graphics.draw(self.image, self.quad, x + dx / 2, y + dy)
+	love.graphics.draw(self.image, self.quad, x - dx / 2, y + dy)
 end
 
 function spritesheet:addAnimation(name)
