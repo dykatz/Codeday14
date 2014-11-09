@@ -38,6 +38,8 @@ function game:enter(from, name)
 		game.data = {}
 		game.data.name = name
 		game.data.created = os.date()
+		game.data.playerx = 2470
+		game.data.playery = 550
 	end
 
 	game.phyworld = love.physics.newWorld(0, 0, 'dynamic')
@@ -45,6 +47,7 @@ function game:enter(from, name)
 	game.tiledcollision = game.tiledworld:initWorldCollision(game.phyworld)
 
 	game.tiledworld:convertToCustomLayer 'Player'
+
 	local playerLayer = game.tiledworld.layers['Player']
 	playerLayer.playerSprite = spritesheet:new(love.graphics.newImage('art/AdventureTileset/AdventureCharacter.png'))
 	playerLayer.playerSprite:addAnimation('down')(0, 0, 32, 44)(32, 0, 32, 44)(64, 0, 32, 44)
@@ -52,7 +55,7 @@ function game:enter(from, name)
 	playerLayer.playerSprite:addAnimation('right')(0, 96, 32, 44)(32, 96, 32, 44)(64, 96, 32, 44)
 	playerLayer.playerSprite:addAnimation('up')(0, 144, 32, 47)(32, 144, 32, 47)(64, 144, 32, 47)
 
-	playerLayer.playerBody = love.physics.newBody(game.phyworld, 2470, 550, 'dynamic')
+	playerLayer.playerBody = love.physics.newBody(game.phyworld, game.data.playerx, game.data.playery, 'dynamic')
 	playerLayer.playerBody:setFixedRotation(true)
 	playerLayer.playerShape = love.physics.newRectangleShape(24, 24)
 	playerLayer.playerFixture = love.physics.newFixture(playerLayer.playerBody, playerLayer.playerShape)
@@ -86,7 +89,23 @@ function game:enter(from, name)
 	end
 
 	function playerLayer:draw()
-		self.playerSprite:draw(self.playerBody:getX() + 12, self.playerBody:getY() + 24)
+		self.playerSprite:draw(self.playerBody:getX(), self.playerBody:getY() + 12)
+	end
+
+	local enemiesLayer = game.tiledworld.layers['Enemies']
+	enemiesLayer.opacity = 0.01
+
+	for _, enemy in pairs(enemiesLayer.objects) do
+		enemy.body = love.physics.newBody(game.phyworld, enemy.x, enemy.y, 'dynamic')
+		enemy.shape = love.physics.newRectangleShape(24, 24)
+		enemy.fixture = love.physics.newFixture(enemy.body, enemy.shape)
+	end
+
+	function enemiesLayer:draw()
+		love.graphics.setColor(255, 255, 255, 255)
+		for _, enemy in pairs(enemiesLayer.objects) do
+			love.graphics.rectangle('fill', enemy.body:getX() - 16, enemy.body:getY() - 16, 32, 32)
+		end
 	end
 end
 
@@ -103,6 +122,8 @@ function game:draw()
 end
 
 function game:save()
+	game.data.playerx = game.tiledworld.layers.Player.playerBody:getX()
+	game.data.playery = game.tiledworld.layers.Player.playerBody:getY()
 	game.data.lastopened = os.date()
 	love.filesystem.write('saves/' .. game.data.name, serialize(game.data))
 end

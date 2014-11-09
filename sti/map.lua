@@ -296,7 +296,6 @@ function Map:initWorldCollision(world)
 							width	= tile.width,
 							height	= tile.height,
 						}
-						print(self.width)
 						calculateObjectPosition(object)
 					end
 				end
