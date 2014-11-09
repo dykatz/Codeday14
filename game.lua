@@ -86,7 +86,7 @@ function game:enter(from, name)
 	end
 
 	function playerLayer:draw()
-		self.playerSprite:draw(self.playerBody:getX(), self.playerBody:getY() + 16)
+		self.playerSprite:draw(self.playerBody:getX() + 12, self.playerBody:getY() + 24)
 	end
 end
 

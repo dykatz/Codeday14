@@ -31,7 +31,7 @@ end
 
 function spritesheet:draw(x, y)
 	local _, _, dx, dy = self.quad:getViewport()
-	love.graphics.draw(self.image, self.quad, x - dx / 2, y + dy)
+	love.graphics.draw(self.image, self.quad, x - dx / 2, y - dy)
 end
 
 function spritesheet:addAnimation(name)
