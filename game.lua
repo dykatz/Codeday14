@@ -93,7 +93,6 @@ function game:enter(from, name)
 	end
 
 	local enemiesLayer = game.tiledworld.layers['Enemies']
-	enemiesLayer.opacity = 0.01
 
 	for _, enemy in pairs(enemiesLayer.objects) do
 		enemy.body = love.physics.newBody(game.phyworld, enemy.x, enemy.y, 'dynamic')
