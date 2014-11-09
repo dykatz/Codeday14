@@ -1,5 +1,6 @@
 require 'misc.serial'
 require 'misc.compress'
+require 'misc.spritesheet'
 
 local gs = require 'hump.gamestate'
 local lf = require 'loveframes'
@@ -13,9 +14,9 @@ function game:enter(from, name)
 
 	local quickbar = lf.Create('frame'):SetName('Quick Bar'):ShowCloseButton(false):SetPos(5, 495):SetState('game'):SetSize(400, 100)
 
-	lf.Create('image', quickbar):SetPos(200, 70):SetImage("art/icons/coin.png")
-	lf.Create('image', quickbar):SetPos(233, 70):SetImage("art/icons/xp.png")
-	lf.Create('image', quickbar):SetPos(267, 70):SetImage("art/icons/badge.png")
+	lf.Create('image', quickbar):SetPos(200, 70):SetImage("art/icons/coin.png"):SetColor(255, 255, 255, 127)
+	lf.Create('image', quickbar):SetPos(233, 70):SetImage("art/icons/xp.png"):SetColor(255, 255, 255, 127)
+	lf.Create('image', quickbar):SetPos(267, 70):SetImage("art/icons/badge.png"):SetColor(255, 255, 255, 127)
 
 	local launchbadge = lf.Create('button', quickbar):SetText('Manage Badges'):SetSize(190, 25):SetPos(5, 70)
 	function launchbadge:OnClick()
@@ -42,14 +43,63 @@ function game:enter(from, name)
 	game.phyworld = love.physics.newWorld(0, 0, 'dynamic')
 	game.tiledworld = sti.new 'art/GameMap'
 	game.tiledcollision = game.tiledworld:initWorldCollision(game.phyworld)
+
+	game.tiledworld:convertToCustomLayer 'Player'
+	local playerLayer = game.tiledworld.layers['Player']
+	playerLayer.playerSprite = spritesheet:new(love.graphics.newImage('art/AdventureTileset/AdventureCharacter.png'))
+	playerLayer.playerSprite:addAnimation('down')(0, 0, 32, 44)(32, 0, 32, 44)(64, 0, 32, 44)
+	playerLayer.playerSprite:addAnimation('left')(0, 48, 32, 44)(32, 48, 32, 44)(64, 48, 32, 44)
+	playerLayer.playerSprite:addAnimation('right')(0, 96, 32, 44)(32, 96, 32, 44)(64, 96, 32, 44)
+	playerLayer.playerSprite:addAnimation('up')(0, 144, 32, 47)(32, 144, 32, 47)(64, 144, 32, 47)
+
+	playerLayer.playerBody = love.physics.newBody(game.phyworld, 2470, 550, 'dynamic')
+	playerLayer.playerBody:setFixedRotation(true)
+	playerLayer.playerShape = love.physics.newRectangleShape(24, 24)
+	playerLayer.playerFixture = love.physics.newFixture(playerLayer.playerBody, playerLayer.playerShape)
+
+	function playerLayer:update(dt)
+		local vx = 0
+		if love.keyboard.isDown('a', 'left') and not love.keyboard.isDown('d', 'right') then
+			vx = -300
+			playerLayer.playerSprite:setAnimation 'left'
+		elseif not love.keyboard.isDown('a', 'left') and love.keyboard.isDown('d', 'right') then
+			vx = 300
+			playerLayer.playerSprite:setAnimation 'right'
+		else
+			vx = 0
+		end
+
+		local vy = 0
+		if love.keyboard.isDown('w', 'up') and not love.keyboard.isDown('s', 'down') then
+			vy = -300
+			playerLayer.playerSprite:setAnimation 'up'
+		elseif not love.keyboard.isDown('w', 'up') and love.keyboard.isDown('s', 'down') then
+			vy = 300
+			playerLayer.playerSprite:setAnimation 'down'
+		else
+			vy = 0
+		end
+
+		if vx ~= 0 or vy ~= 0 then self.playerSprite.looptime = 0.5 else self.playerSprite.looptime = 0 end
+		self.playerBody:setLinearVelocity(vx, vy)
+		self.playerSprite:update(dt)
+	end
+
+	function playerLayer:draw()
+		self.playerSprite:draw(self.playerBody:getX(), self.playerBody:getY() + 16)
+	end
 end
 
 function game:update(dt)
 	game.tiledworld:update(dt)
+	game.phyworld:update(dt)
 end
 
 function game:draw()
+	love.graphics.push()
+	love.graphics.translate(love.graphics.getWidth()/2 - game.tiledworld.layers.Player.playerBody:getX(), love.graphics.getHeight()/2 - game.tiledworld.layers.Player.playerBody:getY())
 	game.tiledworld:draw()
+	love.graphics.pop()
 end
 
 function game:save()
