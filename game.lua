@@ -63,7 +63,7 @@ function game:enter(from, name)
 	function playerLayer:update(dt)
 		local vx = 0
 		if love.keyboard.isDown('a', 'left') and not love.keyboard.isDown('d', 'right') then
-			vx = -300
+			vx = -300	
 			playerLayer.playerSprite:setAnimation 'left'
 		elseif not love.keyboard.isDown('a', 'left') and love.keyboard.isDown('d', 'right') then
 			vx = 300
@@ -116,7 +116,11 @@ end
 
 function game:draw()
 	love.graphics.push()
-	love.graphics.translate(love.graphics.getWidth()/2 - game.tiledworld.layers.Player.playerBody:getX(), love.graphics.getHeight()/2 - game.tiledworld.layers.Player.playerBody:getY())
+	local ox = love.graphics.getWidth()/2 - game.tiledworld.layers.Player.playerBody:getX()
+	local oy = love.graphics.getHeight()/2 - game.tiledworld.layers.Player.playerBody:getY()
+	ox = ox > 0 and 0 or (ox < -2400 and -2400 or ox)
+	oy = oy > 0 and 0 or (oy < -2600 and -2600 or oy)
+	love.graphics.translate(ox, oy)
 	game.tiledworld:draw()
 	love.graphics.pop()
 end
