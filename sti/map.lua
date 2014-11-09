@@ -526,7 +526,7 @@ function Map:setObjectCoordinates(layer)
 		local y = layer.y + object.y
 		local w = object.width
 		local h = object.height
-		local r = object.rotation
+		local r = object.rotation or 0
 		local cos = math.cos(math.rad(r))
 		local sin = math.sin(math.rad(r))
 
