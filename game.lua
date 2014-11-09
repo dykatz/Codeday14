@@ -13,12 +13,18 @@ function game:enter(from, name)
 
 	local quickbar = lf.Create('frame'):SetName('Quick Bar'):ShowCloseButton(false):SetPos(5, 495):SetState('game'):SetSize(400, 100)
 
+	lf.Create('image', quickbar):SetPos(200, 70):SetImage("art/icons/coin.png")
+	lf.Create('image', quickbar):SetPos(233, 70):SetImage("art/icons/xp.png")
+	lf.Create('image', quickbar):SetPos(267, 70):SetImage("art/icons/badge.png")
+
 	local launchbadge = lf.Create('button', quickbar):SetText('Manage Badges'):SetSize(190, 25):SetPos(5, 70)
 	function launchbadge:OnClick()
 		local badgemanager = lf.Create('frame'):SetName('Badge Manager'):SetState('game'):SetSize(400, 400):Center()
+
+		local badgepointstotal = lf.Create('progressbar', badgemanager):SetPos(5, 30):SetSize(390, 25)
 	end
 
-	local exitgame = lf.Create('button', quickbar):SetText('Exit Game'):SetSize(95, 25):SetPos(200, 70)
+	local exitgame = lf.Create('button', quickbar):SetText('Exit Game'):SetSize(95, 25):SetPos(300, 70)
 	function exitgame:OnClick()
 		game:save()
 		gs.switch(menu)
@@ -47,10 +53,6 @@ function game:draw()
 end
 
 function game:save()
-	for v, k in pairs(game.data) do
-		print(v, k)
-	end
-
 	game.data.lastopened = os.date()
 	love.filesystem.write('saves/' .. game.data.name, serialize(game.data))
 end
