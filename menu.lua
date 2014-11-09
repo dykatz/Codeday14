@@ -7,10 +7,6 @@ local lf = require 'loveframes'
 menu = {}
 
 function menu.enter()
-	--menu.background = love.graphics.newImage("mainIntroBackground.jpg")
-	love.graphics.setNewFont(12)
-	love.graphics.setBackgroundColor(0, 0, 255)
-
 	lf.SetState 'menu'
 
 	menu.frame = lf.Create 'frame'
